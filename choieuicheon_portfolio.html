@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>최의천 — 웹 디자이너 & 퍼블리셔</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700&family=DM+Mono:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0a0a0a;
+    --white: #f5f2ec;
+    --accent: #c8f55a;
+    --accent2: #ff6b3d;
+    --muted: #6b6b6b;
+    --border: rgba(245,242,236,0.12);
+    --font-display: 'Bebas Neue', sans-serif;
+    --font-body: 'Noto Sans KR', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--font-body);
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* 커스텀 커서 */
+  .cursor {
+    width: 12px; height: 12px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease;
+    mix-blend-mode: difference;
+  }
+  .cursor-follower {
+    width: 36px; height: 36px;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    position: fixed;
+    top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transition: transform 0.35s ease, width 0.3s, height 0.3s, opacity 0.3s;
+    opacity: 0.5;
+  }
+
+  /* 네비게이션 */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: difference;
+  }
+
+  .nav-logo {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.08em;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--white);
+    text-decoration: none;
+    font-weight: 400;
+    transition: color 0.3s;
+    position: relative;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--accent);
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover::after { width: 100%; }
+
+  /* 히어로 섹션 */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 4rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-display);
+    font-size: 22vw;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(245,242,236,0.05);
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(5rem, 12vw, 11rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.5s forwards;
+  }
+
+  .hero-title span {
+    display: block;
+    color: var(--accent);
+  }
+
+  .hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 4rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .hero-desc {
+    max-width: 320px;
+    font-size: 0.9rem;
+    line-height: 1.8;
+    color: rgba(245,242,236,0.6);
+  }
+
+  .hero-scroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollDown 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollDown {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* 섹션 공통 */
+  section {
+    padding: 8rem 4rem;
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* 어바웃 */
+  #about {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .about-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+  }
+
+  .about-body {
+    font-size: 0.95rem;
+    line-height: 2;
+    color: rgba(245,242,236,0.65);
+  }
+
+  .about-body strong {
+    color: var(--white);
+    font-weight: 500;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 2.5rem;
+  }
+
+  .skill-tag {
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    color: rgba(245,242,236,0.6);
+    transition: all 0.3s;
+  }
+
+  .skill-tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,245,90,0.05);
+  }
+
+  /* 어바웃 - 타이틀 + 프로필 사진 행 */
+  .about-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .about-title-row .about-title {
+    flex: 1;
+  }
+
+  .about-profile {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    position: relative;
+  }
+
+  .about-profile-img {
+    width: 200px;
+    height: 240px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    background: rgba(245,242,236,0.03);
+    cursor: pointer;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+
+  .about-profile-img:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent), 0 8px 32px rgba(200,245,90,0.1);
+  }
+
+  .about-profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+  }
+
+  .about-profile-img img.loaded {
+    display: block;
+  }
+
+  .about-profile-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    transition: opacity 0.3s;
+  }
+
+  .about-profile-img img.loaded ~ .about-profile-placeholder {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .profile-icon {
+    font-size: 1.4rem;
+    color: var(--muted);
+    width: 48px;
+    height: 48px;
+    border: 1px dashed var(--muted);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.3s, color 0.3s;
+  }
+
+  .about-profile-img:hover .profile-icon {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .profile-hint {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--muted);
+    text-align: center;
+    line-height: 1.6;
+    letter-spacing: 0.05em;
+    transition: color 0.3s;
+  }
+
+  .about-profile-img:hover .profile-hint {
+    color: rgba(200,245,90,0.7);
+  }
+
+  .about-profile-badge {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    color: var(--accent);
+    border: 1px solid rgba(200,245,90,0.3);
+    padding: 0.3rem 0.8rem;
+    border-radius: 100px;
+  }
+
+  .profile-url-form {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 0.5rem);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.8rem;
+    width: 240px;
+    z-index: 10;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+
+  .profile-url-form.open { display: flex; gap: 0.4rem; }
+
+  .profile-url-input {
+    flex: 1;
+    background: rgba(245,242,236,0.05);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 0.4rem 0.6rem;
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    outline: none;
+  }
+
+  .profile-url-input:focus { border-color: var(--accent); }
+
+  .profile-url-btn {
+    background: var(--accent);
+    color: var(--black);
+    border: none;
+    border-radius: 4px;
+    padding: 0.4rem 0.7rem;
+    font-size: 0.7rem;
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  /* 스탯 */
+  .stats-row {
+    display: flex;
+    gap: 4rem;
+    margin-top: 3.5rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat-item {}
+
+  .stat-num {
+    font-family: var(--font-display);
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 0.4rem;
+  }
+
+  /* 포트폴리오 */
+  #works { border-top: 1px solid var(--border); }
+
+  .works-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4rem;
+  }
+
+  .works-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+  }
+
+  .works-filter {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1.2rem;
+    border: 1px solid var(--border);
+    background: none;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 100px;
+    transition: all 0.3s;
+  }
+
+  .filter-btn.active, .filter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(200,245,90,0.05);
+  }
+
+  .works-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .work-card {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    background: #111;
+    cursor: none;
+  }
+
+  .work-card:nth-child(1) { grid-column: span 2; aspect-ratio: 16/6; }
+
+  .work-visual {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-size: 4rem;
+    letter-spacing: 0.05em;
+    color: rgba(255,255,255,0.05);
+  }
+
+  /* 각 프로젝트 배경 */
+  .work-card:nth-child(1) .work-visual { background: linear-gradient(135deg, #0d1f0a 0%, #1a3d12 50%, #0d1f0a 100%); color: rgba(200,245,90,0.08); font-size: 8rem; }
+  .work-card:nth-child(2) .work-visual { background: linear-gradient(135deg, #1a0a0a 0%, #3d1212 100%); color: rgba(255,107,61,0.08); }
+  .work-card:nth-child(3) .work-visual { background: linear-gradient(135deg, #0a0a1a 0%, #12123d 100%); color: rgba(100,150,255,0.08); }
+  .work-card:nth-child(4) .work-visual { background: linear-gradient(135deg, #1a1a0a 0%, #3d3d12 100%); color: rgba(255,220,80,0.08); }
+  .work-card:nth-child(5) .work-visual { background: linear-gradient(135deg, #0a1a1a 0%, #123d3d 100%); color: rgba(80,220,200,0.08); }
+
+  /* 실제 디자인 패턴 오버레이 */
+  .work-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.15;
+  }
+
+  .work-card:nth-child(1)::before {
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 30px,
+      rgba(200,245,90,0.3) 30px,
+      rgba(200,245,90,0.3) 31px
+    );
+  }
+
+  .work-card:nth-child(2)::before {
+    background: radial-gradient(circle at 30% 70%, rgba(255,107,61,0.3) 0%, transparent 60%);
+  }
+
+  .work-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(10,10,10,0.85);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2.5rem;
+    z-index: 2;
+  }
+
+  .work-card:hover .work-overlay { opacity: 1; }
+  .work-card:hover .work-visual { transform: scale(1.04); }
+
+  .work-category {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+
+  .work-name {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    letter-spacing: 0.05em;
+    line-height: 1;
+    margin-bottom: 0.8rem;
+  }
+
+  .work-desc {
+    font-size: 0.8rem;
+    color: rgba(245,242,236,0.6);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .work-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-decoration: none;
+    font-family: var(--font-mono);
+  }
+
+  .work-link::after {
+    content: '→';
+    transition: transform 0.3s;
+  }
+
+  .work-link:hover::after { transform: translateX(4px); }
+
+  /* 항상 보이는 하단 정보 */
+  .work-info {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 2rem;
+    z-index: 1;
+  }
+
+  .work-num {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: rgba(245,242,236,0.25);
+    letter-spacing: 0.1em;
+  }
+
+  /* 서비스 */
+  #services {
+    border-top: 1px solid var(--border);
+  }
+
+  .services-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 5rem);
+    line-height: 0.92;
+    margin-bottom: 4rem;
+    letter-spacing: 0.02em;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .service-item {
+    padding: 3rem 2.5rem;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .service-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--accent);
+    transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .service-item:hover::before { width: 100%; }
+  .service-item:hover { border-color: rgba(200,245,90,0.2); }
+
+  /* 학습중 서비스 */
+  .learning-grid {
+    opacity: 0.85;
+  }
+
+  .learning-item {
+    border-style: dashed !important;
+    border-color: rgba(245,242,236,0.1) !important;
+    position: relative;
+  }
+
+  .learning-item::before {
+    background: var(--accent2) !important;
+  }
+
+  .learning-item:hover {
+    border-color: rgba(255,107,61,0.3) !important;
+    opacity: 1;
+  }
+
+  .learning-badge {
+    display: inline-block;
+    margin-top: 1.2rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 100px;
+    background: rgba(255,107,61,0.1);
+    border: 1px solid rgba(255,107,61,0.35);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    color: var(--accent2);
+    text-transform: uppercase;
+  }
+
+  .learning-badge::before {
+    content: '▶ ';
+    font-size: 0.45rem;
+    vertical-align: middle;
+    margin-right: 2px;
+    animation: blink 1.4s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  .learning-pill {
+    border-color: rgba(255,107,61,0.2) !important;
+    color: rgba(255,107,61,0.6) !important;
+  }
+
+  .learning-pill:hover {
+    border-color: var(--accent2) !important;
+    color: var(--accent2) !important;
+    background: rgba(255,107,61,0.05) !important;
+  }
+
+  .service-icon {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .service-num {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .service-name {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .service-desc {
+    font-size: 0.82rem;
+    line-height: 1.9;
+    color: rgba(245,242,236,0.5);
+  }
+
+  .service-tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 1.8rem;
+  }
+
+  .tool-pill {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.6rem;
+    background: rgba(245,242,236,0.05);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--muted);
+  }
+
+  /* 프로세스 */
+  #process {
+    border-top: 1px solid var(--border);
+    background: #050505;
+  }
+
+  .process-title {
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 6vw, 5rem);
+    margin-bottom: 5rem;
+    letter-spacing: 0.02em;
+    line-height: 0.92;
+  }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border: 1px solid var(--border);
+    border-right: none;
+  }
+
+  .process-step {
+    padding: 3rem 2rem;
+    border-right: 1px solid var(--border);
+    position: relative;
+  }
+
+  .process-step-num {
+    font-family: var(--font-display);
+    font-size: 5rem;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(200,245,90,0.2);
+    line-height: 1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .process-step-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    color: var(--white);
+  }
+
+  .process-step-desc {
+    font-size: 0.8rem;
+    line-height: 1.8;
+    color: rgba(245,242,236,0.4);
+  }
+
+  /* 컨택트 */
+  #contact {
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 10rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(200,245,90,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .contact-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+  }
+
+  .contact-title {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 10vw, 8rem);
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-title em {
+    font-style: normal;
+    -webkit-text-stroke: 2px var(--white);
+    color: transparent;
+  }
+
+  .contact-sub {
+    font-size: 0.9rem;
+    color: rgba(245,242,236,0.5);
+    line-height: 1.8;
+    max-width: 400px;
+    margin: 0 auto 3rem;
+  }
+
+  .contact-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem 2.5rem;
+    background: var(--accent);
+    color: var(--black);
+    text-decoration: none;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .contact-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--accent2);
+    transform: translateX(-100%);
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .contact-btn:hover::before { transform: translateX(0); }
+
+  .contact-btn span { position: relative; z-index: 1; }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 4rem;
+  }
+
+  .contact-link {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .contact-link:hover { color: var(--accent); }
+
+  /* 푸터 */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-copy {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-back {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+
+  .footer-back:hover { color: var(--accent); }
+
+  /* 스크롤 애니메이션 */
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 반응형 */
+  @media (max-width: 900px) {
+    nav { padding: 1.5rem 2rem; }
+    .nav-links { display: none; }
+    #hero { padding: 0 2rem 4rem; }
+    section { padding: 5rem 2rem; }
+    #about { grid-template-columns: 1fr; gap: 3rem; }
+    .works-grid { grid-template-columns: 1fr; }
+    .work-card:nth-child(1) { grid-column: span 1; aspect-ratio: 4/3; }
+    .services-grid { grid-template-columns: 1fr; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    footer { padding: 1.5rem 2rem; flex-direction: column; gap: 1rem; }
+    .works-header { flex-direction: column; align-items: flex-start; gap: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- 네비게이션 -->
+<nav>
+  <a href="#hero" class="nav-logo">CEC</a>
+  <ul class="nav-links">
+    <li><a href="#about">소개</a></li>
+    <li><a href="#works">작업물</a></li>
+    <li><a href="#services">서비스</a></li>
+    <li><a href="#process">프로세스</a></li>
+    <li><a href="#contact">연락하기</a></li>
+  </ul>
+</nav>
+
+<!-- 히어로 -->
+<section id="hero">
+  <div class="hero-bg-text" aria-hidden="true">DESIGN</div>
+  <div class="hero-tag">웹 디자이너 & 퍼블리셔 — 대구 기반 · 신입</div>
+  <h1 class="hero-title">
+    최의천<br>
+    <span>포트폴리오</span>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      픽셀 하나하나에 의미를 담는 웹 디자이너.<br>
+      브랜드의 철학을 시각 언어로 번역하고,<br>
+      코드로 완성합니다.
+    </p>
+    <div class="hero-scroll">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 어바웃 -->
+<section id="about">
+  <div>
+    <div class="section-label">About</div>
+    <div class="about-title-row">
+      <h2 class="about-title reveal">경험이<br>디자인을<br>만든다</h2>
+      <div class="about-profile reveal">
+        <div class="about-profile-img">
+          <img src="data:image/jpeg;base64,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" alt="프로필 사진" id="profileImg" class="loaded" />
+          <div class="about-profile-placeholder">
+            <span class="profile-icon">＋</span>
+            <span class="profile-hint">사진을 업로드하거나<br>URL을 입력하세요</span>
+          </div>
+        </div>
+        <div class="about-profile-badge">DESIGNER</div>
+        <div class="profile-url-form" id="profileUrlForm">
+          <input class="profile-url-input" id="profileUrlInput" type="text" placeholder="이미지 URL 입력" />
+          <button class="profile-url-btn" id="profileUrlBtn">↵</button>
+        </div>
+      </div>
+    </div>
+    <div class="stats-row reveal">
+      <div class="stat-item">
+        <div class="stat-num">1+</div>
+        <div class="stat-label">Years Exp.</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3+</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">2+</div>
+        <div class="stat-label">Clients</div>
+      </div>
+    </div>
+  </div>
+  <div class="reveal">
+    <p class="about-body">
+      안녕하세요, <strong>웹 디자이너 & 퍼블리셔 최의천</strong>입니다.<br><br>
+      대구를 기반으로 활동하는 신입 디자이너로, 학습과 프로젝트를 통해
+      <strong>브랜드 아이덴티티를 디지털 경험</strong>으로 구현하는 역량을 쌓아왔습니다.<br><br>
+      단순히 보기 좋은 디자인이 아닌, 사용자가 직접 느끼고 반응하는
+      <strong>살아있는 인터페이스</strong>를 만드는 것이 저의 목표입니다.
+    </p>
+    <div class="skill-tags">
+      <span class="skill-tag">UI/UX 디자인</span>
+      <span class="skill-tag">웹 퍼블리싱</span>
+      <span class="skill-tag">반응형 웹</span>
+      <span class="skill-tag">HTML/CSS</span>
+      <span class="skill-tag">JavaScript</span>
+      <span class="skill-tag">Figma</span>
+      <span class="skill-tag">Photoshop</span>
+      <span class="skill-tag">Illustrator</span>
+    </div>
+  </div>
+</section>
+
+<!-- 작업물 -->
+<section id="works">
+  <div class="works-header reveal">
+    <div>
+      <div class="section-label">Works</div>
+      <h2 class="works-title">선별된<br>프로젝트</h2>
+    </div>
+    <div class="works-filter">
+      <button class="filter-btn active">전체</button>
+      <button class="filter-btn">브랜딩</button>
+      <button class="filter-btn">UI/UX</button>
+      <button class="filter-btn">퍼블리싱</button>
+    </div>
+  </div>
+
+  <div class="works-grid reveal">
+    <div class="work-card">
+      <div class="work-visual">BLOOM</div>
+      <div class="work-info"><div class="work-num">01/05</div></div>
+      <div class="work-overlay">
+        <div class="work-category">브랜딩 · UI/UX</div>
+        <div class="work-name">Bloom Beauty</div>
+        <p class="work-desc">국내 뷰티 스타트업의 전체 브랜드 리뉴얼. 미니멀한 감성으로 새로운 디지털 정체성을 구축했습니다.</p>
+        <a href="#" class="work-link">자세히 보기</a>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-visual">ARCH</div>
+      <div class="work-info"><div class="work-num">02/05</div></div>
+      <div class="work-overlay">
+        <div class="work-category">웹 퍼블리싱</div>
+        <div class="work-name">Arch Studio</div>
+        <p class="work-desc">건축사무소 공식 사이트. 3D 시각화와 부드러운 스크롤 인터랙션이 특징입니다.</p>
+        <a href="#" class="work-link">자세히 보기</a>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-visual">NOVA</div>
+      <div class="work-info"><div class="work-num">03/05</div></div>
+      <div class="work-overlay">
+        <div class="work-category">UI/UX · 대시보드</div>
+        <div class="work-name">Nova Analytics</div>
+        <p class="work-desc">SaaS 플랫폼 대시보드 UI/UX 개선 프로젝트. 데이터 시각화와 사용성을 중심으로 설계했습니다.</p>
+        <a href="#" class="work-link">자세히 보기</a>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-visual">FEST</div>
+      <div class="work-info"><div class="work-num">04/05</div></div>
+      <div class="work-overlay">
+        <div class="work-category">이벤트 · 랜딩페이지</div>
+        <div class="work-name">Festiva 2025</div>
+        <p class="work-desc">음악 페스티벌 공식 웹사이트. 역동적인 애니메이션과 티켓팅 UX를 설계했습니다.</p>
+        <a href="#" class="work-link">자세히 보기</a>
+      </div>
+    </div>
+
+    <div class="work-card">
+      <div class="work-visual">CAFÉ</div>
+      <div class="work-info"><div class="work-num">05/05</div></div>
+      <div class="work-overlay">
+        <div class="work-category">F&B · 반응형 웹</div>
+        <div class="work-name">Grain Coffee</div>
+        <p class="work-desc">스페셜티 카페 브랜드 웹사이트. 따뜻한 색감과 감성적인 타이포그래피로 브랜드를 표현했습니다.</p>
+        <a href="#" class="work-link">자세히 보기</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 서비스 -->
+<section id="services">
+  <div class="section-label reveal">Services</div>
+  <h2 class="services-title reveal">제공하는<br>서비스</h2>
+  <div class="services-grid reveal">
+    <div class="service-item">
+      <span class="service-num">01</span>
+      <span class="service-icon">◈</span>
+      <h3 class="service-name">UI/UX<br>디자인</h3>
+      <p class="service-desc">사용자 조사부터 와이어프레임, 프로토타입, 최종 디자인까지. 사용자 중심의 경험을 설계합니다.</p>
+      <div class="service-tools">
+        <span class="tool-pill">Figma</span>
+        <span class="tool-pill">Adobe XD</span>
+        <span class="tool-pill">Principle</span>
+      </div>
+    </div>
+    <div class="service-item">
+      <span class="service-num">02</span>
+      <span class="service-icon">⬡</span>
+      <h3 class="service-name">웹<br>퍼블리싱</h3>
+      <p class="service-desc">시맨틱 HTML, 최적화된 CSS, 크로스브라우저 완벽 구현. 접근성과 성능을 함께 고려합니다.</p>
+      <div class="service-tools">
+        <span class="tool-pill">HTML5</span>
+        <span class="tool-pill">CSS3</span>
+        <span class="tool-pill">JavaScript</span>
+        <span class="tool-pill">GSAP</span>
+      </div>
+    </div>
+    <div class="service-item">
+      <span class="service-num">03</span>
+      <span class="service-icon">▲</span>
+      <h3 class="service-name">브랜드<br>아이덴티티</h3>
+      <p class="service-desc">로고, 컬러 시스템, 타이포그래피 등 일관된 브랜드 비주얼 아이덴티티를 구축합니다.</p>
+      <div class="service-tools">
+        <span class="tool-pill">Illustrator</span>
+        <span class="tool-pill">Photoshop</span>
+        <span class="tool-pill">InDesign</span>
+      </div>
+    </div>
+    <div class="service-item">
+      <span class="service-num">04</span>
+      <span class="service-icon">◎</span>
+      <h3 class="service-name">반응형<br>웹 개발</h3>
+      <p class="service-desc">모바일부터 데스크탑까지. 모든 해상도에서 완벽하게 동작하는 반응형 웹을 구현합니다.</p>
+      <div class="service-tools">
+        <span class="tool-pill">Tailwind</span>
+        <span class="tool-pill">React</span>
+        <span class="tool-pill">Next.js</span>
+      </div>
+    </div>
+    <div class="service-item">
+      <span class="service-num">05</span>
+      <span class="service-icon">✦</span>
+      <h3 class="service-name">모션<br>인터랙션</h3>
+      <p class="service-desc">스크롤 애니메이션, 마이크로인터랙션 등 브랜드를 살아 숨쉬게 만드는 모션 디자인.</p>
+      <div class="service-tools">
+        <span class="tool-pill">GSAP</span>
+        <span class="tool-pill">Lottie</span>
+        <span class="tool-pill">Three.js</span>
+      </div>
+    </div>
+    <div class="service-item">
+      <span class="service-num">06</span>
+      <span class="service-icon">⊞</span>
+      <h3 class="service-name">CMS<br>구축</h3>
+      <p class="service-desc">Wordpress, Webflow 등 CMS를 활용한 관리 편의성 높은 웹사이트를 구축합니다.</p>
+      <div class="service-tools">
+        <span class="tool-pill">Webflow</span>
+        <span class="tool-pill">WordPress</span>
+        <span class="tool-pill">Framer</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 학습중인 서비스 -->
+  <div class="section-label reveal" style="margin-top: 5rem;">Learning</div>
+  <h2 class="services-title reveal">학습중인<br>서비스</h2>
+  <div class="services-grid reveal learning-grid">
+    <div class="service-item learning-item">
+      <span class="service-num">L-01</span>
+      <span class="service-icon">⬡</span>
+      <h3 class="service-name">프론트엔드<br>개발</h3>
+      <p class="service-desc">React, Vue.js 등 모던 프레임워크를 활용한 컴포넌트 기반 UI 개발을 학습하고 있습니다.</p>
+      <div class="service-tools">
+        <span class="tool-pill learning-pill">React</span>
+        <span class="tool-pill learning-pill">Vue.js</span>
+        <span class="tool-pill learning-pill">TypeScript</span>
+      </div>
+      <span class="learning-badge">학습중</span>
+    </div>
+    <div class="service-item learning-item">
+      <span class="service-num">L-02</span>
+      <span class="service-icon">◉</span>
+      <h3 class="service-name">3D &<br>WebGL</h3>
+      <p class="service-desc">Three.js와 WebGL을 활용해 웹에서 몰입감 있는 3D 인터랙티브 경험을 구현하는 방법을 배우고 있습니다.</p>
+      <div class="service-tools">
+        <span class="tool-pill learning-pill">Three.js</span>
+        <span class="tool-pill learning-pill">WebGL</span>
+        <span class="tool-pill learning-pill">Blender</span>
+      </div>
+      <span class="learning-badge">학습중</span>
+    </div>
+    <div class="service-item learning-item">
+      <span class="service-num">L-03</span>
+      <span class="service-icon">✳</span>
+      <h3 class="service-name">앱<br>디자인</h3>
+      <p class="service-desc">iOS / Android 플랫폼 가이드라인을 이해하고 네이티브 앱 UI/UX 설계 역량을 키우고 있습니다.</p>
+      <div class="service-tools">
+        <span class="tool-pill learning-pill">Swift UI</span>
+        <span class="tool-pill learning-pill">Material 3</span>
+        <span class="tool-pill learning-pill">Figma</span>
+      </div>
+      <span class="learning-badge">학습중</span>
+    </div>
+  </div>
+</section>
+
+<!-- 프로세스 -->
+<section id="process">
+  <div class="section-label reveal">Process</div>
+  <h2 class="process-title reveal">작업<br>프로세스</h2>
+  <div class="process-steps reveal">
+    <div class="process-step">
+      <div class="process-step-num">01</div>
+      <h3 class="process-step-name">발견 & 분석</h3>
+      <p class="process-step-desc">클라이언트와의 심층 인터뷰를 통해 비즈니스 목표, 타겟 사용자, 경쟁사 분석을 진행합니다.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num">02</div>
+      <h3 class="process-step-name">기획 & 설계</h3>
+      <p class="process-step-desc">정보 구조 설계, 사용자 흐름 정의, 와이어프레임 제작으로 프로젝트의 뼈대를 구성합니다.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num">03</div>
+      <h3 class="process-step-name">디자인 & 프로토타입</h3>
+      <p class="process-step-desc">브랜드 아이덴티티를 반영한 고화질 목업과 인터랙티브 프로토타입을 제작합니다.</p>
+    </div>
+    <div class="process-step">
+      <div class="process-step-num">04</div>
+      <h3 class="process-step-name">개발 & 런칭</h3>
+      <p class="process-step-desc">완벽한 코드 구현, QA 테스트, 성능 최적화를 거쳐 최종 런칭까지 함께합니다.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 컨택트 -->
+<section id="contact">
+  <div class="contact-bg" aria-hidden="true"></div>
+  <div class="contact-label">Contact</div>
+  <h2 class="contact-title reveal">
+    함께<br><em>만들어요</em>
+  </h2>
+  <p class="contact-sub reveal">새로운 프로젝트, 협업, 또는 단순한 안녕 인사도 좋습니다. 편하게 연락해주세요.</p>
+  <a href="mailto:hello@kimjieun.com" class="contact-btn reveal">
+    <span>이메일 보내기 →</span>
+  </a>
+  <div class="contact-links reveal">
+    <a href="#" class="contact-link">Behance</a>
+    <a href="#" class="contact-link">Instagram</a>
+    <a href="#" class="contact-link">LinkedIn</a>
+    <a href="#" class="contact-link">Notion CV</a>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-copy">© 2025 Kim Jieun. All rights reserved.</span>
+  <a href="#hero" class="footer-back">↑ 맨 위로</a>
+</footer>
+
+<script>
+  // 커스텀 커서
+  const cursor = document.getElementById('cursor');
+  const follower = document.getElementById('cursorFollower');
+  let mx = 0, my = 0, fx = 0, fy = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.transform = `translate(${mx - 6}px, ${my - 6}px)`;
+  });
+
+  function animateFollower() {
+    fx += (mx - fx - 18) * 0.12;
+    fy += (my - fy - 18) * 0.12;
+    follower.style.transform = `translate(${fx}px, ${fy}px)`;
+    requestAnimationFrame(animateFollower);
+  }
+  animateFollower();
+
+  document.querySelectorAll('a, button, .work-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform += ' scale(2)';
+      follower.style.width = '60px';
+      follower.style.height = '60px';
+    });
+    el.addEventListener('mouseleave', () => {
+      follower.style.width = '36px';
+      follower.style.height = '36px';
+    });
+  });
+
+  // 스크롤 reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(el => observer.observe(el));
+
+  // 필터 버튼
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+
+  // 프로필 사진 인터랙션
+  const profileImgBox = document.querySelector('.about-profile-img');
+  const profileImg = document.getElementById('profileImg');
+  const profileUrlForm = document.getElementById('profileUrlForm');
+  const profileUrlInput = document.getElementById('profileUrlInput');
+  const profileUrlBtn = document.getElementById('profileUrlBtn');
+
+  profileImgBox.addEventListener('click', (e) => {
+    if (!profileUrlForm.contains(e.target)) {
+      profileUrlForm.classList.toggle('open');
+      if (profileUrlForm.classList.contains('open')) profileUrlInput.focus();
+    }
+  });
+
+  function applyProfileUrl() {
+    const url = profileUrlInput.value.trim();
+    if (!url) return;
+    profileImg.onload = null;
+    profileImg.onerror = null;
+    profileImg.classList.remove('loaded');
+    profileImg.onload = () => {
+      profileImg.classList.add('loaded');
+      profileUrlForm.classList.remove('open');
+    };
+    profileImg.onerror = () => {
+      profileImg.classList.remove('loaded');
+      profileUrlInput.style.borderColor = 'var(--accent2)';
+      setTimeout(() => profileUrlInput.style.borderColor = '', 1500);
+    };
+    profileImg.src = url;
+  }
+
+  profileUrlBtn.addEventListener('click', applyProfileUrl);
+  profileUrlInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyProfileUrl(); });
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.about-profile')) {
+      profileUrlForm.classList.remove('open');
+    }
+  });
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 50) {
+      nav.style.mixBlendMode = 'normal';
+      nav.style.background = 'rgba(10,10,10,0.9)';
+      nav.style.backdropFilter = 'blur(10px)';
+    } else {
+      nav.style.mixBlendMode = 'difference';
+      nav.style.background = 'transparent';
+      nav.style.backdropFilter = 'none';
+    }
+  });
+</script>
+</body>
+</html>
