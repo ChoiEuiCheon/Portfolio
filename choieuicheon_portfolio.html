@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=1280, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>최의천 — 웹 디자이너 & 퍼블리셔</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -32,6 +32,7 @@
     font-weight: 300;
     overflow-x: hidden;
     cursor: none;
+    min-width: 1280px;
   }
 
   /* 커스텀 커서 */
@@ -61,7 +62,9 @@
   /* 네비게이션 */
   nav {
     position: fixed;
-    top: 0; left: 0; right: 0;
+    top: 0; left: 0;
+    width: 1280px;
+    min-width: 1280px;
     z-index: 100;
     padding: 2rem 6rem;
     display: flex;
@@ -108,7 +111,7 @@
 
   /* 히어로 섹션 */
   #hero {
-    min-height: 100vh;
+    min-height: 720px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -123,7 +126,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     font-family: var(--font-display);
-    font-size: 22vw;
+    font-size: 282px;
     color: transparent;
     -webkit-text-stroke: 1px rgba(245,242,236,0.05);
     white-space: nowrap;
@@ -145,9 +148,9 @@
 
   .hero-title {
     font-family: var(--font-display);
-    font-size: clamp(5rem, 12vw, 11rem);
+    font-size: 10rem;
     line-height: 0.92;
-    letter-spacing: -0.07em;
+    letter-spacing: -0.065em;
     opacity: 0;
     animation: fadeUp 0.8s 0.5s forwards;
   }
@@ -240,7 +243,7 @@
 
   .about-title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 5vw, 5.5rem);
+    font-size: 4.1rem;
     line-height: 1.0;
     letter-spacing: 0.01em;
   }
@@ -467,14 +470,10 @@
 
   .works-title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 6vw, 5rem);
-    line-height: 0.92;
-    letter-spacing: 0.02em;
-  }
-
-  .works-filter {
+    font-size: 5rem;
     display: flex;
     gap: 1rem;
+    line-height: 1;
   }
 
   .filter-btn {
@@ -637,10 +636,10 @@
 
   .services-title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 6vw, 5rem);
-    line-height: 1.0;
-    margin-bottom: 4rem;
+    font-size: 5rem;
     letter-spacing: 0.02em;
+    line-height: 1;
+    margin-bottom: 4rem;
   }
 
   .services-grid {
@@ -783,10 +782,10 @@
 
   .process-title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 6vw, 5rem);
-    margin-bottom: 5rem;
+    font-size: 5rem;
     letter-spacing: 0.02em;
     line-height: 0.92;
+    margin-bottom: 4rem;
   }
 
   .process-steps {
@@ -855,7 +854,7 @@
 
   .contact-title {
     font-family: var(--font-display);
-    font-size: clamp(4rem, 10vw, 8rem);
+    font-size: 8rem;
     line-height: 1.0;
     letter-spacing: -0.01em;
     margin-bottom: 2.5rem;
@@ -1014,8 +1013,8 @@
     transform: translateY(0);
   }
 
-  /* 반응형 */
-  @media (max-width: 900px) {
+  /* 반응형 비활성화 — 고정 레이아웃 유지 */
+  @media (max-width: 0px) {
     nav { padding: 1.5rem 2rem; }
     .nav-links { display: none; }
     #hero { padding: 0 2rem 4rem; }
